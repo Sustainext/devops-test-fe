@@ -32,7 +32,7 @@ stages:
         command: 'buildAndPush'
         repository: $(frontendImageName)
         dockerfile: $(frontendDockerfilePath)
-        containerRegistry: $(azureServiceConnection)
+        containerRegistry: 'devopstest1'
         tags: $(imageTag)
 
     - task: AzureCLI@2
