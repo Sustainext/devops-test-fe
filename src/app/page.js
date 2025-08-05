@@ -170,7 +170,7 @@ export default function Home() {
             </div>
             <div className="bg-white shadow-lg rounded-lg p-16 max-w-md w-full my-20 mx-auto min-h-fit max-h-max ">
               <h2 className="text-left text-2xl font-extrabold text-gray-900">
-                Welcome back
+             Welcome back
               </h2>
               <p className="text-sm mb-6">Login to sustainable solutions</p>
               <form onSubmit={handleLogin}>
