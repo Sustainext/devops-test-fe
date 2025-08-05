@@ -125,9 +125,26 @@ const MyGoals = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const { name, value } = e.target;
+
+  let cleanValue = value;
+
+  // Only sanitize non-date fields
+  if (name !== "deadline" && name !== "organization") {
+    cleanValue = value.replace(/[^a-zA-Z0-9\s]/g, "");
+  }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: cleanValue,
+    }));
+
+
+ 
+};
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
 
   const handleStatusChange = (status) => {
     setFormData((prev) => ({ ...prev, status }));
