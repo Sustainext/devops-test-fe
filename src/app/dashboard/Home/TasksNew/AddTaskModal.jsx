@@ -33,13 +33,24 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit, users }) => {
     setIsStatusDropdownOpen(false);
   };
 
-  const handleFormChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    setIsStatusDropdownOpen(false)
-  };
+ const handleFormChange = (e) => {
+  const { name, value } = e.target;
+
+  let cleanValue = value;
+
+  // Only sanitize non-date fields
+  if (name !== "deadline") {
+    cleanValue = value.replace(/[^a-zA-Z0-9\s]/g, "");
+  }
+
+  setFormData({
+    ...formData,
+    [name]: cleanValue,
+  });
+
+  setIsStatusDropdownOpen(false);
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

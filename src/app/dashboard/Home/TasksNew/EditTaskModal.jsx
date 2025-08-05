@@ -37,13 +37,23 @@ const EditTaskModal = ({ isOpen, onClose, onSubmit, task = {} }) => {
 
   if (!isOpen) return null;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+
+  let cleanValue = value;
+
+  // Only sanitize non-date fields
+  if (name !== "dueDate" &&  name !== "assignedOn") {
+    cleanValue = value.replace(/[^a-zA-Z0-9\s]/g, "");
+  }
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: cleanValue,
     }));
-  };
+
+
+ 
+};
 
   const handleStatusChange = (status) => {
     setFormData((prev) => ({ ...prev, status }));

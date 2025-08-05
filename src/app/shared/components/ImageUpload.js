@@ -12,60 +12,75 @@ const ImageUpload = ({ onFileSelect,format,setIsFileUploaded,accept}) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [errorTimeoutId, setErrorTimeoutId] = useState(null);
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0]; // Handling single file
-      if (!file) return; // If no file, do nothing
+const onDrop = useCallback(
+  (acceptedFiles) => {
+    const file = acceptedFiles[0];
+    if (!file) return;
 
-      if (file) {
-        onFileSelect(file);
-      }
+    const allowedExtensions = [
+      ".pdf", ".doc", ".docx", ".xls", ".xlsx",
+      ".png", ".jpg", ".jpeg", ".gif"
+    ];
 
-      // Check for file size limit (2MB)
-      if (file.size > 2097152) {
-        const newErrorMessage = "File size should not exceed 2MB.";
-        setErrorMessage(newErrorMessage);
-        const timeoutId = setTimeout(() => {
-          setErrorMessage("");
-          setErrorTimeoutId(null);
-        }, 10000); // Clear the error after 10 seconds
-        setErrorTimeoutId(timeoutId);
-        return;
-      }
-      setIsUploading(true); // Start the upload indicator
+    const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
 
-      // Setup file reader for image preview (if image)
-      const reader = new FileReader();
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
-      reader.onload = () => {
-        setFiles([
-          {
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            preview: reader.result,
-          },
-        ]);
-      };
+    if (!allowedExtensions.includes(fileExtension)) {
+      const newErrorMessage = `Files with ${fileExtension} extension are not allowed.`;
+      setErrorMessage(newErrorMessage);
+      if (errorTimeoutId) clearTimeout(errorTimeoutId);
+      const timeoutId = setTimeout(() => {
+        setErrorMessage("");
+        setErrorTimeoutId(null);
+      }, 10000);
+      setErrorTimeoutId(timeoutId);
+      return;
+    }
 
-      if (file.type.startsWith("image/")) {
-        reader.readAsDataURL(file);
-      } else {
-        setFiles([
-          {
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            preview: null,
-          },
-        ]);
-      }
+    if (file.size > 2097152) {
+      const newErrorMessage = "File size should not exceed 2MB.";
+      setErrorMessage(newErrorMessage);
+      const timeoutId = setTimeout(() => {
+        setErrorMessage("");
+        setErrorTimeoutId(null);
+      }, 10000);
+      setErrorTimeoutId(timeoutId);
+      return;
+    }
 
-      mockUpload(file);
-    },
-    [onFileSelect]
-  );
+    onFileSelect(file);
+    setIsUploading(true);
+
+    const reader = new FileReader();
+    reader.onabort = () => console.log("file reading was aborted");
+    reader.onerror = () => console.log("file reading has failed");
+    reader.onload = () => {
+      setFiles([
+        {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          preview: file.type.startsWith("image/") ? reader.result : null,
+        },
+      ]);
+    };
+
+    if (file.type.startsWith("image/")) {
+      reader.readAsDataURL(file);
+    } else {
+      setFiles([
+        {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          preview: null,
+        },
+      ]);
+    }
+
+    mockUpload(file);
+  },
+  [onFileSelect, errorTimeoutId]
+);
 
   const mockUpload = (file) => {
     // Simulate an upload process

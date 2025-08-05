@@ -24,10 +24,22 @@ const AddGoalModal = ({ isOpen, onClose, onSubmit }) => {
     return [year, month, day].join("-");
   };
 
-  const datahandleChange = (e) => {
-    setAddGoals({ ...addgoles, [e.target.name]: e.target.value });
-  };
+  // const datahandleChange = (e) => {
+  //   setAddGoals({ ...addgoles, [e.target.name]: e.target.value });
+  // };
 
+  const datahandleChange = (e) => {
+  const { name, value } = e.target;
+
+  let cleanValue = value;
+
+  // Sanitize input for text fields only
+  if (name !== "deadline" && name !== "date") {
+    cleanValue = value.replace(/[^a-zA-Z0-9\s]/g, ""); // Only letters, numbers, spaces
+  }
+
+  setAddGoals({ ...addgoles, [e.target.name]: cleanValue });
+};
   const LoaderOpen = () => {
     // Open loader
   };

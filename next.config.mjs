@@ -24,7 +24,19 @@ const nextConfig = {
     AUTH0_REDIRECT_URL: "https://sustainext-udm.sustainext.ai/callback",
     // AUTH0_REDIRECT_URL: "http://localhost:3000/callback",
   },
- 
+   async headers() {
+    return [
+      {
+        source: "/(.*)", // Apply to all routes
+        headers: [
+          {
+            key: "X-Frame-Options",
+            value: "DENY", // Or "SAMEORIGIN"
+          },
+        ],
+      },
+    ];
+  },
   images: {
     domains: [
       "udm-be-dev.sustainext.ai",

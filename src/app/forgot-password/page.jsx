@@ -4,7 +4,8 @@ import axios from 'axios';
 import Link from 'next/link';
 import { IoArrowBack } from 'react-icons/io5';
 import { MdKey } from "react-icons/md";
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Forgotpassword = () => {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
@@ -25,13 +26,25 @@ const Forgotpassword = () => {
         setSent(true);
       }
     } catch (error) {
-      console.error('Error:', error);
-    } finally {
+    // Check if error is AxiosError and has a response (API error)
+    if (error.response) {
+      if (error.response.status === 404) {
+        toast.error(error.response.data.detail );
+      } else {
+        toast.error(`Error: ${error.response.data.detail || 'Request failed'}`);
+      }
+    } else {
+      // Network or unexpected error  
+      toast.error('An unexpected error occurred');
+    }
+   } finally {
       setLoading(false);
     }
   };
 
   return (
+    <>
+    <ToastContainer/>
     <div className='min-h-[125vh] grid place-items-center bg-[#f2f2f2]'>
       <div className='bg-white w-80 rounded-md'>
         {sent ? (
@@ -120,6 +133,7 @@ const Forgotpassword = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
